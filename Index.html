@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zariya Order Form</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #fafafa;
+        --line: rgba(0, 0, 0, 0.12);
+        --line-strong: rgba(0, 0, 0, 0.24);
+        --text: #050505;
+        --muted: #656565;
+        --gold: #c9a962;
+        --gold-light: #d4b77c;
+        --gold-dark: #a08040;
+        --font-display: "Cormorant Garamond", Georgia, serif;
+        --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: "Montserrat", sans-serif;
+        --bg-blur-amount: 5px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-body);
+        color: var(--text);
+      }
+
+      .page-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .page-background::before {
+        content: "";
+        position: absolute;
+        inset: -8%;
+        background:
+          radial-gradient(circle at 16% 18%, #fff6e6 0%, rgba(255, 246, 230, 0) 54%),
+          radial-gradient(circle at 84% 78%, #faedd7 0%, rgba(250, 237, 215, 0) 52%),
+          linear-gradient(135deg, #f9efdc 0%, #f5e8cf 45%, #efdfc3 100%);
+        filter: blur(var(--bg-blur-amount));
+        transform: scale(1.1);
+      }
+
+      .page-background::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 8% 4%, rgba(201, 169, 98, 0.18), transparent 36%),
+          radial-gradient(circle at 92% 96%, rgba(201, 169, 98, 0.1), transparent 40%),
+          rgba(255, 249, 239, 0.5);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        padding: clamp(16px, 4vw, 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .order-shell {
+        width: min(1080px, 100%);
+        display: grid;
+        grid-template-columns: minmax(280px, 0.95fr) minmax(340px, 1.05fr);
+        border: 1px solid var(--line);
+        background: var(--bg);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+      }
+
+      .brand-panel {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(28px, 4vw, 52px);
+        background: linear-gradient(180deg, #080808 0%, #151515 58%, #121212 100%);
+        color: #f6f6f6;
+      }
+
+      .brand-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      }
+
+      .brand-panel::after {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -90px;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(201, 169, 98, 0.35), rgba(201, 169, 98, 0));
+        pointer-events: none;
+      }
+
+      .brand-eyebrow {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.64rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+      }
+
+      .brand-title {
+        margin: 18px 0 12px;
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: clamp(2.2rem, 4vw, 3.6rem);
+        line-height: 0.95;
+        letter-spacing: 0.02em;
+      }
+
+      .brand-copy {
+        margin: 0 0 28px;
+        max-width: 34ch;
+        color: rgba(246, 246, 246, 0.82);
+        line-height: 1.7;
+        font-size: 0.95rem;
+      }
+
+      .promise-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .promise-list li {
+        padding: 18px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .promise-list strong {
+        display: block;
+        margin: 0 0 4px;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+      }
+
+      .promise-list span {
+        color: rgba(246, 246, 246, 0.86);
+        font-size: 0.88rem;
+      }
+
+      .brand-contact {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .brand-contact-title {
+        margin: 0 0 12px;
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+      }
+
+      .brand-contact-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .brand-contact-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(246, 246, 246, 0.9);
+        font-size: 0.88rem;
+        text-decoration: none;
+        transition: color 0.2s ease, transform 0.2s ease;
+      }
+
+      .brand-contact-link:hover {
+        color: #ffffff;
+        transform: translateX(2px);
+      }
+
+      .brand-contact-icon {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(201, 169, 98, 0.45);
+        color: var(--gold-light);
+      }
+
+      .brand-contact-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke-width: 1.8;
+      }
+
+      .form-panel {
+        padding: clamp(24px, 4vw, 50px);
+        background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+      }
+
+      .form-eyebrow {
+        margin: 0 0 8px;
+        font-family: var(--font-mono);
+        font-size: 0.64rem;
+        font-weight: 600;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--gold-dark);
+      }
+
+      .form-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: clamp(1.9rem, 3.2vw, 3rem);
+        line-height: 1.05;
+      }
+
+      .form-note {
+        margin: 14px 0 0;
+        max-width: 56ch;
+        font-size: 0.92rem;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .form-note strong {
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+      }
+
+      #orderForm {
+        margin-top: 28px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .field-group {
+        display: grid;
+        gap: 7px;
+      }
+
+      .field-group label {
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .field-group input,
+      .field-group textarea {
+        width: 100%;
+        font-family: var(--font-body);
+        font-size: 0.94rem;
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: var(--bg);
+        padding: 12px 13px;
+      }
+
+      .field-group textarea {
+        min-height: 108px;
+        resize: vertical;
+      }
+
+      .field-group input[type="file"] {
+        padding: 10px;
+        border-style: dashed;
+        border-color: var(--line-strong);
+      }
+
+      .field-group input[type="file"]::file-selector-button {
+        border: 1px solid #131313;
+        background: #131313;
+        color: #fff;
+        padding: 8px 12px;
+        margin-right: 10px;
+        cursor: pointer;
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .field-group input::placeholder,
+      .field-group textarea::placeholder {
+        color: #9a9a9a;
+      }
+
+      .field-group input:focus,
+      .field-group textarea:focus {
+        outline: none;
+        border-color: var(--gold-dark);
+        box-shadow: 0 0 0 4px rgba(201, 169, 98, 0.16);
+      }
+
+      .field-help {
+        margin: 2px 0 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .field-help.error {
+        color: #a0342a;
+      }
+
+      .file-preview-wrap {
+        margin-top: 8px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        padding: 8px;
+      }
+
+      .file-preview-media {
+        width: 100%;
+        max-height: 220px;
+        object-fit: contain;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .file-preview-note {
+        margin: 8px 0 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .submit-btn {
+        min-height: 54px;
+        margin-top: 4px;
+        border: 1px solid #0b0b0b;
+        background: #0b0b0b;
+        color: #ffffff;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s ease, background 0.28s ease;
+      }
+
+      .submit-btn svg {
+        width: 17px;
+        height: 17px;
+        stroke-width: 1.8;
+      }
+
+      .submit-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        background: #171717;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      .submit-btn:disabled {
+        cursor: wait;
+        transform: none;
+        background: #2e2e2e;
+        border-color: #2e2e2e;
+        box-shadow: none;
+      }
+
+      .submit-btn.is-loading svg {
+        display: none;
+      }
+
+      .privacy-note {
+        margin: 2px 0 0;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .status {
+        margin-top: 8px;
+        min-height: 20px;
+        font-size: 0.9rem;
+      }
+
+      .status.success,
+      .status.error {
+        padding: 11px 12px;
+        border: 1px solid;
+      }
+
+      .status.success {
+        color: #0e6b2f;
+        border-color: rgba(14, 107, 47, 0.25);
+        background: rgba(14, 107, 47, 0.07);
+      }
+
+      .status.error {
+        color: #a0342a;
+        border-color: rgba(160, 52, 42, 0.24);
+        background: rgba(160, 52, 42, 0.07);
+      }
+
+      @media (max-width: 980px) {
+        .order-shell {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          padding: 12px;
+        }
+
+        .field-row {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .submit-btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-background" aria-hidden="true"></div>
+    <div class="page">
+      <section class="order-shell">
+        <aside class="brand-panel">
+          <p class="brand-eyebrow">Zariya</p>
+          <h1 class="brand-title">Order Request</h1>
+          <p class="brand-copy">
+            Share your details to confirm your order. We keep the experience clean, quick, and premium.
+          </p>
+          <ul class="promise-list">
+            <li>
+              <strong>Premium Build</strong>
+              <span>Craft-first products made to hold shape and feel elevated.</span>
+            </li>
+            <li>
+              <strong>Fast Dispatch</strong>
+              <span>Order updates start quickly once your request is submitted.</span>
+            </li>
+            <li>
+              <strong>Trusted Service</strong>
+              <span>Clear communication and smooth support from order to delivery.</span>
+            </li>
+          </ul>
+          <div class="brand-contact">
+            <p class="brand-contact-title">Reach us</p>
+            <ul class="brand-contact-list">
+              <li>
+                <a class="brand-contact-link" href="https://www.zariyaofficial.com" target="_blank" rel="noopener noreferrer">
+                  <span class="brand-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M3 12h18"></path>
+                      <path d="M12 3a15.5 15.5 0 0 1 0 18"></path>
+                      <path d="M12 3a15.5 15.5 0 0 0 0 18"></path>
+                    </svg>
+                  </span>
+                  <span>www.zariyaofficial.com</span>
+                </a>
+              </li>
+              <li>
+                <a class="brand-contact-link" href="mailto:zariya.wyw@gmail.com">
+                  <span class="brand-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <rect x="3" y="5" width="18" height="14" rx="1.8"></rect>
+                      <path d="M3 7l9 6 9-6"></path>
+                    </svg>
+                  </span>
+                  <span>zariya.wyw@gmail.com</span>
+                </a>
+              </li>
+              <li>
+                <a class="brand-contact-link" href="tel:6399008999">
+                  <span class="brand-contact-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M5 4.5h3l1.4 4.2-2.1 1.7a14.5 14.5 0 0 0 6.3 6.3l1.7-2.1 4.2 1.4v3A1.5 1.5 0 0 1 18 20.5C9.7 20.5 3.5 14.3 3.5 6A1.5 1.5 0 0 1 5 4.5z"></path>
+                    </svg>
+                  </span>
+                  <span>6399008999</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <main class="form-panel">
+          <p class="form-eyebrow">Place your order</p>
+          <h2 class="form-title">Complete your details</h2>
+          <p class="form-note">
+            Your order ID will be generated automatically after submission.
+          </p>
+
+          <form id="orderForm" autocomplete="on">
+            <div class="field-row">
+              <div class="field-group">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" placeholder="Enter your full name" required>
+              </div>
+              <div class="field-group">
+                <label for="phone">Phone Number</label>
+                <input id="phone" name="phone" type="tel" placeholder="Enter your phone number" required pattern="[0-9+\-\s]{7,20}">
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="email">Email ID</label>
+              <input id="email" name="email" type="email" placeholder="Enter your email ID" required>
+            </div>
+
+            <div class="field-group">
+              <label for="address">Address</label>
+              <textarea id="address" name="address" placeholder="Enter your complete shipping address" required></textarea>
+            </div>
+
+            <div class="field-group">
+              <label for="customizationNotes">Customization Request (Optional)</label>
+              <textarea id="customizationNotes" name="customizationNotes" placeholder="Share any custom print, text, placement, color, or fit preference"></textarea>
+            </div>
+
+            <div class="field-group">
+              <label for="customizationFile">Upload Reference File (Optional)</label>
+              <input id="customizationFile" name="customizationFile" type="file" accept="*/*">
+              <p id="fileMeta" class="field-help">Any file type accepted. Max size: 8 MB.</p>
+              <div id="filePreviewWrap" class="file-preview-wrap" hidden>
+                <img id="filePreviewImage" class="file-preview-media" alt="Selected file preview" hidden>
+                <p id="filePreviewNote" class="file-preview-note"></p>
+              </div>
+            </div>
+
+            <button id="submitBtn" class="submit-btn" type="submit">
+              <span>Submit Order</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M5 12h14"></path>
+                <path d="M13 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            <p class="privacy-note">We only use this information to process and update your order.</p>
+          </form>
+
+          <div id="status" class="status" aria-live="polite"></div>
+        </main>
+      </section>
+    </div>
+
+    <script>
+      const form = document.getElementById('orderForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const statusEl = document.getElementById('status');
+      const customizationFileInput = document.getElementById('customizationFile');
+      const fileMeta = document.getElementById('fileMeta');
+      const filePreviewWrap = document.getElementById('filePreviewWrap');
+      const filePreviewImage = document.getElementById('filePreviewImage');
+      const filePreviewNote = document.getElementById('filePreviewNote');
+      const defaultButtonMarkup = submitBtn.innerHTML;
+      const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024;
+      let filePreviewUrl = '';
+
+      function setSubmittingState(isSubmitting) {
+        submitBtn.disabled = isSubmitting;
+        submitBtn.classList.toggle('is-loading', isSubmitting);
+        submitBtn.innerHTML = isSubmitting ? '<span>Submitting...</span>' : defaultButtonMarkup;
+      }
+
+      function formatBytes(bytes) {
+        if (!bytes) {
+          return '0 B';
+        }
+        const units = ['B', 'KB', 'MB', 'GB'];
+        const size = Math.floor(Math.log(bytes) / Math.log(1024));
+        const safeSize = Math.min(size, units.length - 1);
+        const value = bytes / (1024 ** safeSize);
+        return `${value.toFixed(value >= 10 || safeSize === 0 ? 0 : 1)} ${units[safeSize]}`;
+      }
+
+      function clearFilePreview() {
+        if (filePreviewUrl) {
+          URL.revokeObjectURL(filePreviewUrl);
+          filePreviewUrl = '';
+        }
+        filePreviewImage.removeAttribute('src');
+        filePreviewImage.hidden = true;
+        filePreviewNote.textContent = '';
+        filePreviewWrap.hidden = true;
+      }
+
+      function setFilePreview(file) {
+        clearFilePreview();
+        if (!file) {
+          return;
+        }
+
+        filePreviewWrap.hidden = false;
+        if (file.type && file.type.startsWith('image/')) {
+          filePreviewUrl = URL.createObjectURL(file);
+          filePreviewImage.src = filePreviewUrl;
+          filePreviewImage.hidden = false;
+          filePreviewNote.textContent = 'Preview of selected image.';
+          return;
+        }
+
+        filePreviewNote.textContent = 'Preview is shown only for image files.';
+      }
+
+      function updateSelectedFileMeta() {
+        const selectedFile = customizationFileInput.files[0];
+        if (!selectedFile) {
+          fileMeta.textContent = 'Any file type accepted. Max size: 8 MB.';
+          fileMeta.className = 'field-help';
+          clearFilePreview();
+          return;
+        }
+
+        if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+          customizationFileInput.value = '';
+          fileMeta.textContent = 'File is too large. Please keep it under 8 MB.';
+          fileMeta.className = 'field-help error';
+          clearFilePreview();
+          return;
+        }
+
+        fileMeta.textContent = `Selected: ${selectedFile.name} (${formatBytes(selectedFile.size)})`;
+        fileMeta.className = 'field-help';
+        setFilePreview(selectedFile);
+      }
+
+      function readFileAsPayload(file) {
+        if (!file) {
+          return Promise.resolve(null);
+        }
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          return Promise.reject(new Error('File is too large. Please keep it under 8 MB.'));
+        }
+
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = String(reader.result || '');
+            const separatorIndex = result.indexOf(',');
+            if (separatorIndex === -1) {
+              reject(new Error('Could not process the selected file.'));
+              return;
+            }
+
+            resolve({
+              name: file.name,
+              mimeType: file.type || 'application/octet-stream',
+              size: file.size,
+              base64Data: result.slice(separatorIndex + 1),
+            });
+          };
+          reader.onerror = () => reject(new Error('Could not read the selected file.'));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function collectOrderData() {
+        const formData = new FormData(form);
+        const selectedFile = customizationFileInput.files[0];
+
+        return {
+          name: String(formData.get('name') || '').trim(),
+          phone: String(formData.get('phone') || '').trim(),
+          email: String(formData.get('email') || '').trim(),
+          address: String(formData.get('address') || '').trim(),
+          customizationNotes: String(formData.get('customizationNotes') || '').trim(),
+          customizationFile: await readFileAsPayload(selectedFile),
+        };
+      }
+
+      function normalizeErrorMessage(error) {
+        if (!error) {
+          return 'Could not submit order.';
+        }
+        if (typeof error === 'string') {
+          return error;
+        }
+        if (typeof error.message === 'string' && error.message.trim()) {
+          return error.message;
+        }
+        return 'Could not submit order.';
+      }
+
+      customizationFileInput.addEventListener('change', updateSelectedFileMeta);
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        statusEl.textContent = '';
+        statusEl.className = 'status';
+        setSubmittingState(true);
+
+        try {
+          const payload = await collectOrderData();
+
+          google.script.run
+            .withSuccessHandler((result) => {
+              statusEl.textContent = `Order submitted successfully. Order ID: ${result.orderId}`;
+              statusEl.className = 'status success';
+              form.reset();
+              updateSelectedFileMeta();
+              setSubmittingState(false);
+            })
+            .withFailureHandler((error) => {
+              statusEl.textContent = normalizeErrorMessage(error);
+              statusEl.className = 'status error';
+              setSubmittingState(false);
+            })
+            .submitOrder(payload);
+        } catch (error) {
+          statusEl.textContent = normalizeErrorMessage(error);
+          statusEl.className = 'status error';
+          setSubmittingState(false);
+        }
+      });
+    </script>
+  </body>
+</html>
