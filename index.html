@@ -594,6 +594,7 @@
       const filePreviewImage = document.getElementById('filePreviewImage');
       const filePreviewNote = document.getElementById('filePreviewNote');
       const defaultButtonMarkup = submitBtn.innerHTML;
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxWqar_X8OLBkwf_eWZSmcM1X-kdzqLrtjEdzpuU0qa/dev/exec';
       const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024;
       let filePreviewUrl = '';
 
@@ -722,6 +723,44 @@
         return 'Could not submit order.';
       }
 
+      function hasAppsScriptClient() {
+        return typeof google !== 'undefined' && google.script && google.script.run;
+      }
+
+      async function submitOrderHttp(payload) {
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+          throw new Error('Set APPS_SCRIPT_URL to your deployed Apps Script /exec URL.');
+        }
+
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify(payload),
+          redirect: 'follow',
+        });
+
+        const responseText = await response.text();
+        let result = null;
+        if (responseText) {
+          try {
+            result = JSON.parse(responseText);
+          } catch (error) {
+            throw new Error('Could not read server response.');
+          }
+        }
+
+        if (!response.ok) {
+          throw new Error((result && result.error) || 'Could not submit order.');
+        }
+        if (result && result.ok === false) {
+          throw new Error(result.error || 'Could not submit order.');
+        }
+
+        return result || {};
+      }
+
       customizationFileInput.addEventListener('change', updateSelectedFileMeta);
 
       form.addEventListener('submit', async (event) => {
@@ -732,21 +771,31 @@
 
         try {
           const payload = await collectOrderData();
+          if (hasAppsScriptClient()) {
+            google.script.run
+              .withSuccessHandler((result) => {
+                statusEl.textContent = `Order submitted successfully. Order ID: ${result.orderId}`;
+                statusEl.className = 'status success';
+                form.reset();
+                updateSelectedFileMeta();
+                setSubmittingState(false);
+              })
+              .withFailureHandler((error) => {
+                statusEl.textContent = normalizeErrorMessage(error);
+                statusEl.className = 'status error';
+                setSubmittingState(false);
+              })
+              .submitOrder(payload);
+            return;
+          }
 
-          google.script.run
-            .withSuccessHandler((result) => {
-              statusEl.textContent = `Order submitted successfully. Order ID: ${result.orderId}`;
-              statusEl.className = 'status success';
-              form.reset();
-              updateSelectedFileMeta();
-              setSubmittingState(false);
-            })
-            .withFailureHandler((error) => {
-              statusEl.textContent = normalizeErrorMessage(error);
-              statusEl.className = 'status error';
-              setSubmittingState(false);
-            })
-            .submitOrder(payload);
+          const result = await submitOrderHttp(payload);
+          const orderIdMessage = result.orderId ? ` Order ID: ${result.orderId}` : '';
+          statusEl.textContent = `Order submitted successfully.${orderIdMessage}`;
+          statusEl.className = 'status success';
+          form.reset();
+          updateSelectedFileMeta();
+          setSubmittingState(false);
         } catch (error) {
           statusEl.textContent = normalizeErrorMessage(error);
           statusEl.className = 'status error';
