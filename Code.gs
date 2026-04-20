@@ -98,23 +98,58 @@ function getOrdersSheet_() {
 }
 
 function ensureOrderHeaders_(sheet) {
+  // Expand sheet columns if needed before reading/writing headers
+  const requiredCols = ORDER_HEADERS.length;
+  if (sheet.getMaxColumns() < requiredCols) {
+    sheet.insertColumnsAfter(sheet.getMaxColumns(), requiredCols - sheet.getMaxColumns());
+  }
+
   if (sheet.getLastRow() === 0) {
-    sheet.getRange(1, 1, 1, ORDER_HEADERS.length).setValues([ORDER_HEADERS]);
+    sheet.getRange(1, 1, 1, requiredCols).setValues([ORDER_HEADERS]);
+    _styleHeaderRow(sheet, requiredCols);
     return;
   }
 
-  const currentHeaders = sheet.getRange(1, 1, 1, ORDER_HEADERS.length).getValues()[0];
+  const currentHeaders = sheet.getRange(1, 1, 1, requiredCols).getValues()[0];
   const orderSheetDetected = String(currentHeaders[1] || '').trim().toLowerCase() === 'order id';
   if (!orderSheetDetected) {
-    return;
+    return; // Not our sheet — don't touch it
   }
 
   const requiresUpdate = ORDER_HEADERS.some(function (header, index) {
     return String(currentHeaders[index] || '').trim() !== header;
   });
   if (requiresUpdate) {
-    sheet.getRange(1, 1, 1, ORDER_HEADERS.length).setValues([ORDER_HEADERS]);
+    sheet.getRange(1, 1, 1, requiredCols).setValues([ORDER_HEADERS]);
+    _styleHeaderRow(sheet, requiredCols);
   }
+}
+
+/**
+ * Applies bold + background styling to the header row.
+ */
+function _styleHeaderRow(sheet, numCols) {
+  const headerRange = sheet.getRange(1, 1, 1, numCols);
+  headerRange.setFontWeight('bold');
+  headerRange.setBackground('#1a1a1a');
+  headerRange.setFontColor('#ffffff');
+  sheet.setFrozenRows(1);
+}
+
+/**
+ * Run this ONCE from the Apps Script editor (Run ▶ resetHeaders) to fix
+ * an existing sheet that is missing the Product / Quantity columns.
+ */
+function resetHeaders() {
+  const sheet = getOrdersSheet_();
+  const requiredCols = ORDER_HEADERS.length;
+  if (sheet.getMaxColumns() < requiredCols) {
+    sheet.insertColumnsAfter(sheet.getMaxColumns(), requiredCols - sheet.getMaxColumns());
+  }
+  sheet.getRange(1, 1, 1, requiredCols).setValues([ORDER_HEADERS]);
+  _styleHeaderRow(sheet, requiredCols);
+  SpreadsheetApp.flush();
+  Logger.log('Headers reset to: ' + ORDER_HEADERS.join(', '));
 }
 
 function parseSpreadsheetId_(value) {

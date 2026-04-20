@@ -678,6 +678,21 @@
           </form>
 
           <div id="status" class="status" aria-live="polite"></div>
+
+          <div id="receiptUi" hidden style="padding: 28px; border: 1px solid var(--line); background: #ffffff; margin-top: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.04);">
+            <div style="color: #0e6b2f; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid var(--line); padding-bottom: 16px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <h3 style="margin: 0; font-family: var(--font-display); font-size: 1.8rem;">Order Confirmed</h3>
+            </div>
+            <div style="font-size: 0.94rem; line-height: 1.7; display: grid; gap: 14px;">
+              <div><strong style="color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;">Order Reference ID</strong><br><span id="recOrderId" style="font-weight: 600; font-size: 1.1rem;"></span></div>
+              <div><strong style="color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;">Product Selected</strong><br><span id="recProduct" style="color: var(--text);"></span></div>
+              <div><strong style="color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;">Total Quantity</strong><br><span id="recQuantity" style="color: var(--text);"></span></div>
+            </div>
+            <div style="margin-top: 32px;">
+              <button type="button" onclick="window.location.reload()" class="catalog-btn" style="width: auto; color: var(--text); background: transparent; border-color: var(--line-strong); min-height: 48px; padding: 0 24px; font-weight: 600; cursor: pointer;">Place Another Order</button>
+            </div>
+          </div>
         </main>
       </section>
     </div>
@@ -686,6 +701,10 @@
       const form = document.getElementById('orderForm');
       const submitBtn = document.getElementById('submitBtn');
       const statusEl = document.getElementById('status');
+      const receiptUi = document.getElementById('receiptUi');
+      const recOrderId = document.getElementById('recOrderId');
+      const recProduct = document.getElementById('recProduct');
+      const recQuantity = document.getElementById('recQuantity');
       const customizationFileInput = document.getElementById('customizationFile');
       const fileMeta = document.getElementById('fileMeta');
       const filePreviewWrap = document.getElementById('filePreviewWrap');
@@ -823,6 +842,16 @@
         return 'Could not submit order.';
       }
 
+      function showReceipt(orderId, product, quantity) {
+        form.hidden = true;
+        if (statusEl) statusEl.hidden = true;
+        if (receiptUi) receiptUi.hidden = false;
+        if (recOrderId) recOrderId.textContent = orderId || 'Pending';
+        if (recProduct) recProduct.textContent = product || 'N/A';
+        if (recQuantity) recQuantity.textContent = quantity || 'N/A';
+        receiptUi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
       function hasAppsScriptClient() {
         return typeof google !== 'undefined' && google.script && google.script.run;
       }
@@ -869,18 +898,19 @@
 
         try {
           const payload = await collectOrderData();
+
           if (hasAppsScriptClient()) {
             google.script.run
               .withSuccessHandler((result) => {
-                statusEl.textContent = `Order submitted successfully. Order ID: ${result.orderId}`;
-                statusEl.className = 'status success';
-                form.reset();
-                updateSelectedFileMeta();
+                showReceipt(result.orderId, payload.product, payload.quantity);
                 setSubmittingState(false);
               })
               .withFailureHandler((error) => {
-                statusEl.textContent = normalizeErrorMessage(error);
-                statusEl.className = 'status error';
+                if (statusEl) {
+                  statusEl.textContent = normalizeErrorMessage(error);
+                  statusEl.className = 'status error';
+                  statusEl.hidden = false;
+                }
                 setSubmittingState(false);
               })
               .submitOrder(payload);
@@ -888,15 +918,14 @@
           }
 
           const result = await submitOrderHttp(payload);
-          const orderIdMessage = result.orderId ? ` Order ID: ${result.orderId}` : '';
-          statusEl.textContent = `Order submitted successfully.${orderIdMessage}`;
-          statusEl.className = 'status success';
-          form.reset();
-          updateSelectedFileMeta();
+          showReceipt(result.orderId, payload.product, payload.quantity);
           setSubmittingState(false);
         } catch (error) {
-          statusEl.textContent = normalizeErrorMessage(error);
-          statusEl.className = 'status error';
+          if (statusEl) {
+            statusEl.textContent = normalizeErrorMessage(error);
+            statusEl.className = 'status error';
+            statusEl.hidden = false;
+          }
           setSubmittingState(false);
         }
       });
