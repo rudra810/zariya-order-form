@@ -12,6 +12,8 @@ const ORDER_HEADERS = [
   'Name',
   'Phone Number',
   'Email ID',
+  'Product',
+  'Quantity',
   'Address',
   'Customization Notes',
   'Attachment Name',
@@ -54,6 +56,8 @@ function submitOrder(order) {
       cleanOrder.name,
       cleanOrder.phone,
       cleanOrder.email,
+      cleanOrder.product,
+      cleanOrder.quantity,
       cleanOrder.address,
       cleanOrder.customizationNotes,
       attachment.name,
@@ -228,6 +232,8 @@ function validateOrder_(order) {
   const name = String(order.name || '').trim();
   const phone = String(order.phone || '').trim();
   const email = String(order.email || '').trim();
+  const product = String(order.product || '').trim();
+  const quantity = String(order.quantity || '').trim();
   const address = String(order.address || '').trim();
   const customizationNotes = String(order.customizationNotes || '').trim();
   const customizationFile = validateCustomizationFile_(order.customizationFile);
@@ -240,6 +246,12 @@ function validateOrder_(order) {
   }
   if (!email) {
     throw new Error('Email ID is required.');
+  }
+  if (!product) {
+    throw new Error('Please select a product.');
+  }
+  if (!quantity || isNaN(Number(quantity)) || Number(quantity) < 1) {
+    throw new Error('Please enter a valid quantity.');
   }
   if (!address) {
     throw new Error('Address is required.');
@@ -254,6 +266,8 @@ function validateOrder_(order) {
     name: name,
     phone: phone,
     email: email,
+    product: product,
+    quantity: quantity,
     address: address,
     customizationNotes: customizationNotes,
     customizationFile: customizationFile,
@@ -313,9 +327,9 @@ function backfillAttachmentPreviews() {
 
   for (let i = 0; i < rows.length; i += 1) {
     const rowNumber = i + 2;
-    const attachmentName = String(rows[i][7] || '').trim();
-    const linkCellValue = String(rows[i][8] || '').trim();
-    const previewCellValue = String(rows[i][9] || '').trim();
+    const attachmentName = String(rows[i][9] || '').trim();
+    const linkCellValue = String(rows[i][10] || '').trim();
+    const previewCellValue = String(rows[i][11] || '').trim();
 
     if (!attachmentName || previewCellValue) {
       continue;
@@ -333,9 +347,9 @@ function backfillAttachmentPreviews() {
     const imageUrl = 'https://drive.google.com/uc?export=view&id=' + fileId;
     const isImage = String(file.getMimeType() || '').toLowerCase().startsWith('image/');
 
-    sheet.getRange(rowNumber, 9).setFormula('=HYPERLINK("' + fileUrl + '","View File")');
+    sheet.getRange(rowNumber, 11).setFormula('=HYPERLINK("' + fileUrl + '","View File")');
     if (isImage) {
-      sheet.getRange(rowNumber, 10).setFormula('=IMAGE("' + imageUrl + '")');
+      sheet.getRange(rowNumber, 12).setFormula('=IMAGE("' + imageUrl + '")');
       sheet.setRowHeight(rowNumber, 130);
     }
 

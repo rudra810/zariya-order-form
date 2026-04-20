@@ -4,7 +4,7 @@
     <base target="_top">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Zariya Order Form</title>
+    <title>Zariya Exports — Order Form</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -317,7 +317,8 @@
       }
 
       .field-group input,
-      .field-group textarea {
+      .field-group textarea,
+      .field-group select {
         width: 100%;
         font-family: var(--font-body);
         font-size: 0.94rem;
@@ -325,6 +326,26 @@
         border: 1px solid var(--line);
         background: var(--bg);
         padding: 12px 13px;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+
+      .field-group select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23656565' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 18px;
+        cursor: pointer;
+      }
+
+      .field-group select option {
+        background: var(--bg);
+        color: var(--text);
+        padding: 8px;
+      }
+
+      .field-group select option[value=""] {
+        color: #9a9a9a;
       }
 
       .field-group textarea {
@@ -357,7 +378,8 @@
       }
 
       .field-group input:focus,
-      .field-group textarea:focus {
+      .field-group textarea:focus,
+      .field-group select:focus {
         outline: none;
         border-color: var(--gold-dark);
         box-shadow: 0 0 0 4px rgba(201, 169, 98, 0.16);
@@ -494,23 +516,23 @@
     <div class="page">
       <section class="order-shell">
         <aside class="brand-panel">
-          <p class="brand-eyebrow">Zariya</p>
+          <p class="brand-eyebrow">Zariya Exports</p>
           <h1 class="brand-title">Order Request</h1>
           <p class="brand-copy">
-            Share your details to confirm your order. We keep the experience clean, quick, and premium.
+            Premium custom apparel &amp; exports since 2020. Place your order and we'll handle the rest — clean, quick, and crafted to perfection.
           </p>
           <ul class="promise-list">
             <li>
-              <strong>Premium Build</strong>
-              <span>Craft-first products made to hold shape and feel elevated.</span>
+              <strong>Premium Quality</strong>
+              <span>Craft-first apparel from 160 GSM basics to 320 GSM fleece outerwear.</span>
             </li>
             <li>
-              <strong>Fast Dispatch</strong>
-              <span>Order updates start quickly once your request is submitted.</span>
+              <strong>Full Customization</strong>
+              <span>Screen printing, sublimation, embroidery — your brand, your way.</span>
             </li>
             <li>
-              <strong>Trusted Service</strong>
-              <span>Clear communication and smooth support from order to delivery.</span>
+              <strong>Pan-India Exports</strong>
+              <span>Reliable dispatch with clear communication from order to delivery.</span>
             </li>
           </ul>
           <div class="catalog-btn-wrap">
@@ -560,10 +582,10 @@
         </aside>
 
         <main class="form-panel">
-          <p class="form-eyebrow">Place your order</p>
-          <h2 class="form-title">Complete your details</h2>
+          <p class="form-eyebrow">Zariya Exports — 2026 Catalog</p>
+          <h2 class="form-title">Place Your Order</h2>
           <p class="form-note">
-            Your order ID will be generated automatically after submission.
+            Your order ID will be generated automatically after submission. Fields marked required must be filled.
           </p>
 
           <form id="orderForm" autocomplete="on">
@@ -584,13 +606,55 @@
             </div>
 
             <div class="field-group">
+              <label for="product">Select Product</label>
+              <select id="product" name="product" required>
+                <option value="" disabled selected>— Choose a product from our 2026 catalog —</option>
+                <optgroup label="Round Neck &amp; Active Wear T-Shirts">
+                  <option value="Polyester T-Shirt (Dotnet/NK) — 160–180 GSM">Polyester T-Shirt (Dotnet/NK) — 160–180 GSM</option>
+                  <option value="Sarina / Dri-Fit T-Shirt — 180–200 GSM">Sarina / Dri-Fit T-Shirt — 180–200 GSM</option>
+                  <option value="Cotton Bio Wash Oversized T-Shirt — 220–240 GSM">Cotton Bio Wash Oversized T-Shirt — 220–240 GSM</option>
+                  <option value="French Terry 100% Cotton Bio-Wash T-Shirt — 260–280 GSM">French Terry 100% Cotton Bio-Wash T-Shirt — 260–280 GSM</option>
+                  <option value="Cotton Bio Wash T-Shirt (Moscow) — 180–200 GSM">Cotton Bio Wash T-Shirt (Moscow) — 180–200 GSM</option>
+                  <option value="Nirmal Net T-Shirt / Nairobi Active Wear — 160–180 GSM">Nirmal Net T-Shirt / Nairobi Active Wear — 160–180 GSM</option>
+                  <option value="Sublimation Cotton T-Shirt (Marsella) — 160–180 GSM">Sublimation Cotton T-Shirt (Marsella) — 160–180 GSM</option>
+                </optgroup>
+                <optgroup label="Collar T-Shirts">
+                  <option value="Collar Matty T-Shirt (Tokio) — 220–240 GSM">Collar Matty T-Shirt (Tokio) — 220–240 GSM</option>
+                  <option value="Collar Dri-Fit / Sarina T-Shirt (Rio) — 180–200 GSM">Collar Dri-Fit / Sarina T-Shirt (Rio) — 180–200 GSM</option>
+                  <option value="Sap Matty T-Shirt (Denver) — 240–260 GSM">Sap Matty T-Shirt (Denver) — 240–260 GSM</option>
+                </optgroup>
+                <optgroup label="Winter &amp; Outerwear">
+                  <option value="Hoodie — Cotton Fleece, 300–320 GSM">Hoodie — Cotton Fleece, 300–320 GSM</option>
+                  <option value="Zipper Hoodie — Cotton Fleece, 300–320 GSM">Zipper Hoodie — Cotton Fleece, 300–320 GSM</option>
+                  <option value="Sweatshirt — Cotton Fleece, 300–320 GSM">Sweatshirt — Cotton Fleece, 300–320 GSM</option>
+                  <option value="Collar Zipper — French Terry, 260–280 GSM (Made to Order)">Collar Zipper — French Terry, 260–280 GSM (Made to Order)</option>
+                  <option value="Super Poly Tracksuit — 260–270 GSM">Super Poly Tracksuit — 260–270 GSM</option>
+                </optgroup>
+                <optgroup label="Accessories &amp; Corporate">
+                  <option value="Caps (Standard)">Caps (Standard)</option>
+                  <option value="Caps (Sublimation / Economical)">Caps (Sublimation / Economical)</option>
+                  <option value="Custom Uniforms (Made to Order)">Custom Uniforms (Made to Order)</option>
+                  <option value="Raincoats">Raincoats</option>
+                  <option value="Customized Corporate Gifts (Diaries, Pens, Keychains, Wall Clocks)">Customized Corporate Gifts (Diaries, Pens, Keychains, Wall Clocks)</option>
+                </optgroup>
+                <option value="Other (describe in customization notes)">Other (describe in customization notes)</option>
+              </select>
+              <p class="field-help">Browse our full 2026 catalog for details and pricing.</p>
+            </div>
+
+            <div class="field-group">
+              <label for="quantity">Quantity</label>
+              <input id="quantity" name="quantity" type="number" min="1" placeholder="Enter quantity (e.g. 50)" required>
+            </div>
+
+            <div class="field-group">
               <label for="address">Address</label>
               <textarea id="address" name="address" placeholder="Enter your complete shipping address" required></textarea>
             </div>
 
             <div class="field-group">
               <label for="customizationNotes">Customization Request (Optional)</label>
-              <textarea id="customizationNotes" name="customizationNotes" placeholder="Share any custom print, text, placement, color, or fit preference"></textarea>
+              <textarea id="customizationNotes" name="customizationNotes" placeholder="Share any custom print, text, placement, color, size breakdown, or fit preference"></textarea>
             </div>
 
             <div class="field-group">
@@ -738,6 +802,8 @@
           name: String(formData.get('name') || '').trim(),
           phone: String(formData.get('phone') || '').trim(),
           email: String(formData.get('email') || '').trim(),
+          product: String(formData.get('product') || '').trim(),
+          quantity: String(formData.get('quantity') || '').trim(),
           address: String(formData.get('address') || '').trim(),
           customizationNotes: String(formData.get('customizationNotes') || '').trim(),
           customizationFile: await readFileAsPayload(selectedFile),
